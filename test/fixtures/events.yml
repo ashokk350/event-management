@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  title: MyString
+  event_trype: MyString
+  status: MyString
+  start_time: 
+  end_time: 
+  description: MyText
+  cost: 1.5
+
+two:
+  title: MyString
+  event_trype: MyString
+  status: MyString
+  start_time: 
+  end_time: 
+  description: MyText
+  cost: 1.5

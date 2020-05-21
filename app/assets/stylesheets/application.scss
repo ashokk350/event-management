@@ -1,0 +1,19 @@
+@import "bootstrap-sprockets";
+@import "bootstrap";
+@import 'bootstrap-datetimepicker';
+
+
+.flash_messages {
+  position:fixed;
+  bottom:5%;
+  width:50%;
+  left:50%;
+  -webkit-transform:translateX(-50%);
+  -moz-transform:translateX(-50%);
+  transform:translateX(-50%);
+  z-index:2300;
+}
+
+#link {
+	padding-top: 12px
+}

@@ -1,0 +1,84 @@
+</br></br>
+<div class="row">
+  <div class="col-md-6">
+    <div class="row">
+      <div class="col-md-3"><b>Created By:</b></div>
+      <div class="col-md-9"><%= @event.user.name %></div>
+    </div></br>
+    <div class="row">
+      <div class="col-md-3"><b>Title:</b></div>
+      <div class="col-md-9"><%= @event.title %></div>
+    </div></br>
+
+    <div class="row">
+      <div class="col-md-3"><b>Event type:</b></div>
+      <div class="col-md-9"><%= @event.event_type %></div>
+    </div></br>
+
+    <div class="row">
+      <div class="col-md-3"><b>Start time:</b></div>
+      <div class="col-md-9"><%= @event.start_time %></div>
+    </div></br>
+
+    <div class="row">
+      <div class="col-md-3"><b>End time:</b></div>
+      <div class="col-md-9"><%= @event.end_time %></div>
+    </div></br>
+
+    <div class="row">
+      <div class="col-md-3"><b>Description:</b></div>
+      <div class="col-md-9"><%= @event.description %></div>
+    </div></br>
+
+    <div class="row">
+      <div class="col-md-3"><b>Cost:</b></div>
+      <% if current_user.nil? || current_user.male? %>
+        <div class="col-md-9">&#x20B9;<%= @event.cost %></div>
+      <% else %>
+        <div class="col-md-9">
+          <p>&#x20B9;<%= show_cost(@event.cost) %> <del>&#x20B9;<%= @event.cost %></del></p>
+          <p>You Save: &#x20B9;<%= get_benefit(@event.cost) %>(5%)</p>
+        </div>
+      <% end %>
+    </div></br>
+
+    <div>
+      <% if current_user && !already_registered?(@event) && is_event_closed?(@event) %>
+        <% unless (current_user.id == @event.user_id) %>
+          <%= link_to "Attend Event", attend_event_events_path(event_id: @event.id), method: :post, class: "btn btn-primary" %>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <% if current_user && @event.users.present? %>
+      <h3>Participants</h3>
+      <table class="table table-striped table-bordered table-hover table-sm">
+        <thead class="thead-light">
+          <tr>
+            <th>Name</th>
+            <th>Gender</th>
+            <th>Leave Event</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% @event.users.each do |user| %>
+            <tr>
+              <td><%= user.name %></td>
+              <td><%= user.gender %></td>
+              <td>
+                <%=  link_to "Leave", leave_event_event_path(@event), method: :delete, class: "btn btn-primary #{allow_leave(user.id)}" %>    
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% end %>
+  </div>
+</div></br>
+
+
+<%= link_to 'Edit', edit_event_path(@event), class: 'btn btn-primary' %>
+<%= link_to 'Back', events_path, class: 'btn btn-primary'  %>

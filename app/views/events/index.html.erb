@@ -1,0 +1,86 @@
+<h1>Events</h1>
+
+<table class="table table-striped table-bordered table-hover table-sm" id="events">
+  <thead class="thead-light">
+    <tr>
+      <th class="text-center">Title</th>
+      <th class="text-center">Event type</th>
+      <th class="text-center">Description</th>
+      <th class="text-center">Cost</th>
+      <th class="text-center">Status</th>
+      <th class="text-center" colspan="3">Actions</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @events.each do |event| %>
+      <tr>
+        <td><%= event.title %></td>
+        <td><%= event.event_type %></td>
+        <td><%= event.description %></td>
+        <td><%= event.cost %></td>
+        <td id="event-tracker-<%= event.id %>" class="text-danger" start-time="<%= event.start_time %>" end-time="<%= event.end_time %>" event-id="<%= event.id %>"></td>
+        <td><%= link_to 'Show', event, class: "btn btn-primary btn-sm" %></td>
+        <td><%= link_to 'Edit', edit_event_path(event), class: "btn btn-primary btn-sm edit-#{event.id}" %></td>
+        <td><%= link_to 'Destroy', event, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-primary destroy-#{event.id} btn-sm actions-#{event.id}" %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Event', new_event_path, class: 'btn btn-primary' %>
+
+<script type="text/javascript">
+  $(document).ready(function(){
+    function calculateTime(distance) {
+      var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      return { days: days, hours: hours, minutes: minutes, seconds: seconds }
+    }
+
+    function convertTimeToUtc(time) {
+      var lastIndex = time.lastIndexOf(" ");
+      time = time.substring(0, lastIndex);
+      return time.toString();
+    }
+
+    $("#events tbody tr").each(function () {
+      var currentRow=$(this);
+      var startTime = currentRow.find("td:eq(4)").attr('start-time');
+      var endTime = currentRow.find("td:eq(4)").attr('end-time');
+      var eventId = currentRow.find("td:eq(4)").attr('event-id');
+      startTime = convertTimeToUtc(startTime);
+      endTime = convertTimeToUtc(endTime);
+      time = Date.parse(startTime) > new Date ? startTime : endTime
+      var countDownDate = new Date(time.replace(/\-/g, "/")).getTime();
+
+      var x = setInterval(function() {
+        var now = new Date().getTime();
+        var distance = countDownDate - now;
+        result = calculateTime(distance)
+        status = Date.parse(startTime) > new Date ? 'Starts In' : 'Ends In'
+
+        $(`#event-tracker-${eventId}`).html(`${status}: ` + result['days'] + "d " + result['hours'] + "h " + result['minutes'] + "m " + result['seconds'] + "s")
+
+        if ((Date.parse(endTime) > new Date) && (Date.parse(startTime) < new Date)) {
+          $(`.destroy-${eventId}`).addClass("disabled", true);
+          $(`.edit-${eventId}`).addClass("disabled", true);
+        }
+
+        if (Date.parse(endTime) < new Date) {
+          $(`.destroy-${eventId}`).removeClass("disabled");
+          $(`.edit-${eventId}`).addClass("disabled", true);
+        }
+
+        if (distance < 0 ) {
+          $(`#event-tracker-${eventId}`).html('Closed');
+        }
+      }, 1000);
+    });
+  });
+</script>

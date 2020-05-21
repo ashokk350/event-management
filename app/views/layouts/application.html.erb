@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>EventManagement</title>
+    <%= csrf_meta_tags %>
+
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+  </head>
+
+  <body>
+  	<div>
+	  	<div>
+	  		<nav class="navbar navbar-light" style="background-color: #e3f2fd;">
+	  			<div class="container">
+	  				<div class="row">
+	  					<div class="col-md-10">
+	  						<a  href="#"></a>
+	  						<%= link_to 'Home', events_path, class: "navbar-brand" %>
+	  					</div>
+	  					<div class="col-md-2" id="link">
+	  						<% if current_user %>
+	  							<label><%= current_user.name %></label>&nbsp;
+	  							<%= link_to 'Logout', destroy_user_session_path, method: :delete %> 
+	  						<% else %>
+	  							<%= link_to 'Login', new_user_session_path %>&nbsp;
+	  						<% end %>
+	  					</div>
+	  				</div>
+	  			</div>
+				</nav>
+	  	</div>
+	  	<div class="container">
+	  		<div class="flash_messages">
+		      <% if alert %>
+		        <div class='alert alert-danger alert-dismissible'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><%= flash[:alert] %></div>
+		      <% elsif notice %>
+		        <div class='alert alert-success alert-dismissible'><a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a><%= flash[:notice] %></div>
+		      <% end %>
+		    </div>
+	    	<%= yield %>
+	  	</div>
+	  </div>
+  </body>
+</html>
